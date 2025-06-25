@@ -1,4 +1,4 @@
-// app/cart/page.tsx
+
 'use client';
 import { Trash2 } from 'lucide-react';
 

@@ -1,11 +1,11 @@
-// lib/apis.ts
+
 export async function getAllProducts() {
   const res = await fetch('https://dummyjson.com/products?limit=10');
   const data = await res.json();
   return data.products;
 }
 
-// lib/apis.ts
+
 export async function getProductById(id: number) {
   try {
     const res = await fetch(`https://dummyjson.com/products/${id}`);

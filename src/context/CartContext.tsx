@@ -1,4 +1,4 @@
-// context/CartContext.tsx
+
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
  useEffect(() => {
-  console.log('🛒 Güncel Sepet:', cartItems); // 👈 bunu ekle
+  console.log('🛒 Güncel Sepet:', cartItems); 
   localStorage.setItem('cart', JSON.stringify(cartItems));
 }, [cartItems]);
 
