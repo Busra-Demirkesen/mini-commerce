@@ -1,4 +1,4 @@
-// app/page.tsx
+
 import { getAllProducts } from '@/lib/apis';
 import ProductCarousel from '@/components/ProductCarousel';
 

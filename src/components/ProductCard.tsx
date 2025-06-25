@@ -1,6 +1,17 @@
 import Link from 'next/link';
 
-export default function ProductCard({ product }) {
+type Product = {
+  id: string | number;
+  title: string;
+  price: number;
+  thumbnail: string;
+};
+
+type ProductCardProps = {
+  product: Product;
+};
+
+export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/products/${product.id}`} passHref>
       <div className="min-w-[200px] rounded-xl shadow hover:shadow-lg transition p-4 bg-white cursor-pointer">
