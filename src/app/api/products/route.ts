@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 
 import { NextResponse } from "next/server";
 import { Product } from "@/types/product";
 
 
+=======
+// src/app/api/products/route.ts
+import { NextResponse } from "next/server";
+import { Product } from "@/types/product";
+
+// Sahte veri (gerçek veritabanı yerine geçici olarak kullanıyoruz)
+>>>>>>> 73db0d3dfb160665095e266c4d4784d292ccbbd1
 const mockProducts: Product[] = [
   {
     title: "Kol Saati",

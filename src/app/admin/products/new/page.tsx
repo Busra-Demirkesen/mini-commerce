@@ -5,7 +5,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewProductAction } from "@/app/actions/admin/products";
 
-
 import {
   allCategories,
   AvailabilityStatus,
@@ -77,24 +76,26 @@ export default function NewProduct() {
   };
 
   return (
-    <main className="max-w-xl mx-auto p-4">
-      <h1 className="my-6 text-2xl font-semibold">Add a New Product</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <InputField label="Title" {...register("title")} error={errors.title?.message} />
-        <InputField label="Description" {...register("description")} error={errors.description?.message} />
+    <main className="max-w-4xl mx-auto py-10 px-6">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Add New Product</h1>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
+        <InputField label="Title" placeholder="Enter product title" {...register("title")} error={errors.title?.message} />
+        <InputField label="Description" placeholder="Enter product description" {...register("description")} error={errors.description?.message} />
         <SelectField label="Category" options={allCategories} {...register("category")} error={errors.category?.message} />
+        <InputField label="Price" type="number" placeholder="Enter product price" {...register("price")} error={errors.price?.message} />
+        <InputField label="Stock" type="number" placeholder="Enter stock quantity" {...register("stock")} error={errors.stock?.message} />
+        <h2 className="text-md font-semibold text-neutral-800">Product Dimensions</h2>
+        <DimensionFields register={register} errors={errors.dimensions} />
+        <CheckboxGroup label="Tags" name="tags" options={Object.values(Tag)} register={register} error={errors.tags?.[0]} />
         <SelectField label="Availability Status" options={Object.values(AvailabilityStatus)} {...register("availabilityStatus")} />
         <SelectField label="Return Policy" options={Object.values(ReturnPolicy)} {...register("returnPolicy")} />
-        <InputField label="Price" type="number" {...register("price")} error={errors.price?.message} />
-        <InputField label="Stock" type="number" {...register("stock")} error={errors.stock?.message} />
-        <CheckboxGroup label="Tags" name="tags" options={Object.values(Tag)} register={register} error={errors.tags?.[0]} />
-        <DimensionFields register={register} errors={errors.dimensions} />
-        <button
-          type="submit"
-          className="my-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Create Product
-        </button>
+        <div className="flex justify-end">
+          <button type="submit" className="px-6 py-2 bg-black text-white rounded-md hover:opacity-90">
+            Add Product
+          </button>
+        </div>
       </form>
     </main>
   );
