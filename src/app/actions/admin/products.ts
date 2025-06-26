@@ -1,10 +1,12 @@
 'use server';
 
 import { z } from 'zod';
-import { Category, AvailabilityStatus, ReturnPolicy, Tag, Product } from '@/types/product';
+import { Category, AvailabilityStatus, ReturnPolicy, Tag } from '@/types/product';
 import { NewProductFormState } from '@/app/admin/products/new/page';
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
-// 1. Tam Zod schema
+// 1. Zod şeması
 const productSchema = z.object({
   title: z.string().min(3).max(100),
   description: z.string().min(50).max(500),
@@ -21,7 +23,7 @@ const productSchema = z.object({
   }),
 });
 
-// 2. Form verisini ayıklama
+// 2. Form verisini al
 function parseFormData(formData: FormData) {
   return {
     title: formData.get('title'),
@@ -40,7 +42,7 @@ function parseFormData(formData: FormData) {
   };
 }
 
-// 3. Backend action
+// 3. Firestore'a veri kaydeden backend action
 export async function addNewProductAction(
   _: NewProductFormState,
   formData: FormData
@@ -48,6 +50,9 @@ export async function addNewProductAction(
   console.log('🛠️ Receiving new product submission...');
 
   const rawData = parseFormData(formData);
+  console.log("🔍 Parsed raw data:", rawData);
+
+  // ❗ eksik olan bu satırdı:
   const result = productSchema.safeParse(rawData);
 
   if (!result.success) {
@@ -61,12 +66,21 @@ export async function addNewProductAction(
   }
 
   const validated = result.data;
-  console.log('✅ Product is valid:', validated);
 
-  // TODO: Firebase'e veya veritabanına kayıt işlemi buraya
+  try {
+    await addDoc(collection(db, "products"), validated);
+    console.log("✅ Product added to Firestore:", validated);
 
-  return {
-    success: true,
-    message: 'The product is created successfully',
-  };
+    return {
+      success: true,
+      message: 'The product is created successfully',
+    };
+  } catch (error) {
+    console.error("🔥 Firestore Error:", error);
+    return {
+      success: false,
+      message: 'Failed to save product to database.',
+      inputs: rawData,
+    };
+  }
 }
