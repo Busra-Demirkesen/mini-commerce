@@ -6,7 +6,7 @@ import { NewProductFormState } from '@/app/admin/products/new/page';
 import { db } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-// 1. Zod şeması
+
 const productSchema = z.object({
   title: z.string().min(3).max(100),
   description: z.string().min(50).max(500),
@@ -23,7 +23,7 @@ const productSchema = z.object({
   }),
 });
 
-// 2. Form verisini al
+
 function parseFormData(formData: FormData) {
   return {
     title: formData.get('title'),
@@ -42,7 +42,7 @@ function parseFormData(formData: FormData) {
   };
 }
 
-// 3. Firestore'a veri kaydeden backend action
+
 export async function addNewProductAction(
   _: NewProductFormState,
   formData: FormData
@@ -52,7 +52,7 @@ export async function addNewProductAction(
   const rawData = parseFormData(formData);
   console.log("🔍 Parsed raw data:", rawData);
 
-  // ❗ eksik olan bu satırdı:
+ 
   const result = productSchema.safeParse(rawData);
 
   if (!result.success) {

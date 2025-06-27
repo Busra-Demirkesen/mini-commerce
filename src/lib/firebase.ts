@@ -1,4 +1,4 @@
-// src/lib/firebase.ts
+
 
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -10,13 +10,11 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-  // measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID, // opsiyonel
 };
 
-// Firebase uygulaması daha önce başlatılmış mı kontrol et
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Firestore bağlantısını al
+
 const db = getFirestore(app);
 
 export { db };
