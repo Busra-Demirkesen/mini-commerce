@@ -81,10 +81,12 @@ export default function AdminPanelPage() {
                   <td className="px-4 py-2 text-sm text-neutral-900">{product.availabilityStatus}</td>
                   <td className="px-4 py-2 text-sm text-neutral-900 flex items-center space-x-2">
                     <Link href={`/admin/products/${product.id}/edit`}>
-                      <PencilSquareIcon className="h-5 w-5 text-blue-600 hover:text-blue-800 cursor-pointer" />
+                      <PencilSquareIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-700 cursor-pointer" />
+
                     </Link>
                     <button onClick={() => handleDelete(product.id)}>
-                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-800 cursor-pointer" />
+                      <TrashIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-700 cursor-pointer" />
+
                     </button>
                   </td>
                 </tr>

@@ -151,12 +151,13 @@ export default function EditProductPage() {
         <DimensionFields register={register} errors={errors.dimensions} />
 
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-          >
-            Update Product
-          </button>
+         <button
+  type="submit"
+  className="px-6 py-2 bg-black text-white rounded-md hover:opacity-90"
+>
+  Update Product
+</button>
+
         </div>
       </form>
     </main>
