@@ -17,7 +17,6 @@ import SelectField from "@/components/shared/SelectField";
 import CheckboxGroup from "@/components/shared/CheckboxGroup";
 import DimensionFields from "@/components/shared/DimensionFields";
 
-// ✅ Schema: category, availabilityStatus, returnPolicy now use enum values directly
 const productSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(10, "Description too short"),
@@ -53,6 +52,8 @@ export default function NewProduct() {
     },
   });
 
+  console.log("Validation errors:", errors);
+
   const onSubmit = async (data: ProductForm) => {
     const formData = new FormData();
     formData.append("title", data.title);
@@ -82,10 +83,7 @@ export default function NewProduct() {
           Add New Product
         </h1>
       </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 gap-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
         <InputField
           label="Title"
           placeholder="Enter product title"
@@ -98,15 +96,12 @@ export default function NewProduct() {
           {...register("description")}
           error={errors.description?.message}
         />
-
-        {/* ✅ Category options updated to use enum values */}
         <SelectField
           label="Category"
           options={Object.values(Category)}
           {...register("category")}
           error={errors.category?.message}
         />
-
         <InputField
           label="Price"
           type="number"
@@ -122,12 +117,9 @@ export default function NewProduct() {
           error={errors.stock?.message}
         />
 
-        <h2 className="text-md font-semibold text-neutral-800">
-          Product Dimensions
-        </h2>
+        <h2 className="text-md font-semibold text-neutral-800">Product Dimensions</h2>
         <DimensionFields register={register} errors={errors.dimensions} />
 
-        {/* ✅ Tags checkbox updated to use enum values */}
         <CheckboxGroup
           label="Tags"
           name="tags"
@@ -136,18 +128,18 @@ export default function NewProduct() {
           error={errors.tags?.[0]}
         />
 
-        {/* ✅ Availability Status uses enum values */}
         <SelectField
           label="Availability Status"
           options={Object.values(AvailabilityStatus)}
           {...register("availabilityStatus")}
+          error={errors.availabilityStatus?.message}
         />
 
-        {/* ✅ Return Policy uses enum values */}
         <SelectField
           label="Return Policy"
           options={Object.values(ReturnPolicy)}
           {...register("returnPolicy")}
+          error={errors.returnPolicy?.message}
         />
 
         <div className="flex justify-end">
