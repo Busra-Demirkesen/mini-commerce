@@ -1,41 +1,40 @@
-<<<<<<< HEAD
-
 import { NextResponse } from "next/server";
-import { Product } from "@/types/product";
-
-
-=======
-// src/app/api/products/route.ts
-import { NextResponse } from "next/server";
-import { Product } from "@/types/product";
-
-// Sahte veri (gerçek veritabanı yerine geçici olarak kullanıyoruz)
->>>>>>> 73db0d3dfb160665095e266c4d4784d292ccbbd1
-const mockProducts: Product[] = [
-  {
-    title: "Kol Saati",
-    description: "Şık ve sade tasarımıyla günlük kullanıma uygun kol saati.",
-    category: "Accessories",
-    availabilityStatus: "InStock",
-    returnPolicy: "ExchangeOnly",
-    price: 129.99,
-    stock: 10,
-    tags: ["New", "Featured"],
-    dimensions: { width: 4, height: 1, depth: 0.5 },
-  },
-  {
-    title: "Akıllı Saat",
-    description: "Spor ve sağlık takibi için ideal çok amaçlı akıllı saat.",
-    category: "Electronics",
-    availabilityStatus: "InStock",
-    returnPolicy: "Returnable",
-    price: 399.99,
-    stock: 5,
-    tags: ["Bestseller"],
-    dimensions: { width: 4.2, height: 1.2, depth: 0.6 },
-  },
-];
 
 export async function GET() {
+  const mockProducts = [
+    {
+      id: "1",
+      title: "Minimal Kol Saati",
+      description: "Şık ve modern minimal kol saati. Metal kasa, deri kayış, su geçirmez tasarım.",
+      category: "ACCESSORIES",
+      availabilityStatus: "IN_STOCK",
+      returnPolicy: "RETURNABLE",
+      price: 599.99,
+      stock: 12,
+      tags: ["NEW_ARRIVAL"],
+      dimensions: {
+        width: 4,
+        height: 1,
+        depth: 0.5,
+      },
+    },
+    {
+      id: "2",
+      title: "Dekoratif Masa Lambası",
+      description: "Sade ve şık tasarımlı dekoratif masa lambası. Yumuşak ışık, metal ayak.",
+      category: "HOME_DECOR",
+      availabilityStatus: "OUT_OF_STOCK",
+      returnPolicy: "NON_RETURNABLE",
+      price: 299.99,
+      stock: 0,
+      tags: ["SALE"],
+      dimensions: {
+        width: 10,
+        height: 25,
+        depth: 10,
+      },
+    },
+  ];
+
   return NextResponse.json(mockProducts);
 }

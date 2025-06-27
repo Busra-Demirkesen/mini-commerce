@@ -39,7 +39,7 @@ export enum Category {
 }
 
 
-export const allCategories = Object.keys(Category); // UI'daki select alanını dinamik olarak oluşturmak için kullanıldı.
+export const allCategories = Object.values(Category); // UI'daki select alanı için enum value’ları
 
 export enum AvailabilityStatus {
   IN_STOCK = 'In Stock',
