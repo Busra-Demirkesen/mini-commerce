@@ -17,3 +17,9 @@ export async function getProductById(id: number) {
   }
 }
 
+
+export async function getProductsByCategory(category: string) {
+  const res = await fetch(`https://dummyjson.com/products/category/${category}`);
+  const data = await res.json();
+  return data.products;
+}
