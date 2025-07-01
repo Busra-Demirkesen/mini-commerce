@@ -18,7 +18,7 @@ type Product = {
 
 export default function ProductDetailPage() {
   const { addToCart } = useCart();
-  const params = useParams(); // ✅ Yeni yöntem
+  const params = useParams(); 
   const id = Number(params?.id);
 
   const [product, setProduct] = useState<Product | null>(null);

@@ -1,3 +1,5 @@
+//Api route backend fonksiyonları yazabilmek için kullandığımız bir dosya
+
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
