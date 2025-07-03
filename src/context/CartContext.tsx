@@ -31,9 +31,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 }, [cartItems]);
 
 
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+ 
 
   const addToCart = (item: CartItem) => {
     setCartItems(prev => {
