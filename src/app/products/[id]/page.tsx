@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { use } from 'react';
-import { useCart } from '@/context/CartContext';
-import { getProductById } from '@/lib/apis';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+
+import { useCart } from "@/context/CartContext";
+import { getProductById } from "@/lib/apis";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 type Product = {
   id: number;
@@ -18,7 +19,7 @@ type Product = {
 
 export default function ProductDetailPage() {
   const { addToCart } = useCart();
-  const params = useParams(); 
+  const params = useParams();
   const id = Number(params?.id);
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -35,9 +36,11 @@ export default function ProductDetailPage() {
     <div className="max-w-6xl mx-auto px-6 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         <div>
-          <img
+          <Image
             src={product.thumbnail}
             alt={product.title}
+            width={500} 
+            height={500}
             className="rounded-xl w-full object-cover"
           />
         </div>

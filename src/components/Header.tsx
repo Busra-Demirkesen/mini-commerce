@@ -37,14 +37,7 @@ const Header = () => {
           >
             Products
           </Link>
-          <Link
-            href="/cart"
-            className={`px-3 py-1 rounded-[40%] transition-colors font-semibold ${
-              pathname === '/cart' ? 'bg-gray-200 text-black' : 'hover:bg-gray-100 hover:text-black text-neutral-700'
-            }`}
-          >
-            Cart
-          </Link>
+         
           <Link
             href="/admin"
             className={`px-3 py-1 rounded-[40%] transition-colors font-semibold ${

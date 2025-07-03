@@ -25,12 +25,19 @@ const productSchema = z.object({
   returnPolicy: z.nativeEnum(ReturnPolicy),
   price: z.coerce.number().min(0, "Price must be at least 0"),
   stock: z.coerce.number().min(0, "Stock must be at least 0"),
+  brand: z.string().min(1, "Brand is required"),
+  sku: z.string().min(1, "SKU is required"),
+  weight: z.coerce.number().min(0, "Weight must be at least 0"),
+  warrantyInformation: z.string().min(1, "Warranty information is required"),
+  shippingInformation: z.string().min(1, "Shipping information is required"),
+  minimumOrderQuantity: z.coerce.number().min(1, "Minimum order quantity must be at least 1"),
   tags: z.array(z.nativeEnum(Tag)).optional(),
   dimensions: z.object({
     width: z.coerce.number().min(0),
     height: z.coerce.number().min(0),
     depth: z.coerce.number().min(0),
   }),
+  // Thumbnail ve images dosya upload için burada tanımlanmadı, ayrı handle edilir
 });
 
 type ProductForm = z.infer<typeof productSchema>;
@@ -43,6 +50,19 @@ export default function NewProduct() {
   } = useForm<ProductForm>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      title: "",
+      description: "",
+      category: undefined,
+      availabilityStatus: undefined,
+      returnPolicy: undefined,
+      price: 0,
+      stock: 0,
+      brand: "",
+      sku: "",
+      weight: 0,
+      warrantyInformation: "",
+      shippingInformation: "",
+      minimumOrderQuantity: 1,
       tags: [],
       dimensions: {
         width: 0,
@@ -63,10 +83,20 @@ export default function NewProduct() {
     formData.append("returnPolicy", data.returnPolicy);
     formData.append("price", data.price.toString());
     formData.append("stock", data.stock.toString());
+    formData.append("brand", data.brand);
+    formData.append("sku", data.sku);
+    formData.append("weight", data.weight.toString());
+    formData.append("warrantyInformation", data.warrantyInformation);
+    formData.append("shippingInformation", data.shippingInformation);
+    formData.append("minimumOrderQuantity", data.minimumOrderQuantity.toString());
+
     data.tags?.forEach((tag) => formData.append("tags", tag));
+
     formData.append("dimensions.width", data.dimensions.width.toString());
     formData.append("dimensions.height", data.dimensions.height.toString());
     formData.append("dimensions.depth", data.dimensions.depth.toString());
+
+  
 
     const result = await addNewProductAction(undefined, formData);
     if (result.success) {
@@ -83,6 +113,7 @@ export default function NewProduct() {
           Add New Product
         </h1>
       </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
         <InputField
           label="Title"
@@ -90,18 +121,21 @@ export default function NewProduct() {
           {...register("title")}
           error={errors.title?.message}
         />
+
         <InputField
           label="Description"
           placeholder="Enter product description"
           {...register("description")}
           error={errors.description?.message}
         />
+
         <SelectField
           label="Category"
           options={Object.values(Category)}
           {...register("category")}
           error={errors.category?.message}
         />
+
         <InputField
           label="Price"
           type="number"
@@ -109,12 +143,57 @@ export default function NewProduct() {
           {...register("price")}
           error={errors.price?.message}
         />
+
         <InputField
           label="Stock"
           type="number"
           placeholder="Enter stock quantity"
           {...register("stock")}
           error={errors.stock?.message}
+        />
+
+        <InputField
+          label="Brand"
+          placeholder="Enter brand name"
+          {...register("brand")}
+          error={errors.brand?.message}
+        />
+
+        <InputField
+          label="SKU"
+          placeholder="Enter SKU"
+          {...register("sku")}
+          error={errors.sku?.message}
+        />
+
+        <InputField
+          label="Weight"
+          type="number"
+          placeholder="Enter product weight"
+          {...register("weight")}
+          error={errors.weight?.message}
+        />
+
+        <InputField
+          label="Warranty Information"
+          placeholder="Enter warranty information"
+          {...register("warrantyInformation")}
+          error={errors.warrantyInformation?.message}
+        />
+
+        <InputField
+          label="Shipping Information"
+          placeholder="Enter shipping information"
+          {...register("shippingInformation")}
+          error={errors.shippingInformation?.message}
+        />
+
+        <InputField
+          label="Minimum Order Quantity"
+          type="number"
+          placeholder="Enter minimum order quantity"
+          {...register("minimumOrderQuantity")}
+          error={errors.minimumOrderQuantity?.message}
         />
 
         <h2 className="text-md font-semibold text-neutral-800">Product Dimensions</h2>
