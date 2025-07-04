@@ -1,5 +1,6 @@
 
 import './globals.css';
+
 import Header from '@/components/Header';
 import { CartProvider } from '@/context/CartContext'; 
 

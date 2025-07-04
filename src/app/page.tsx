@@ -10,10 +10,7 @@ export default async function HomePage() {
   return (
     <main className="py-10 space-y-12">
 
-      {/* Tailwind test divi */}
-      <div className="bg-green-500 text-white p-4">
-        Tailwind Test Çalışıyor
-      </div>
+
 
       <section>
         <h2 className="text-xl font-semibold px-10">Smartphones</h2>
