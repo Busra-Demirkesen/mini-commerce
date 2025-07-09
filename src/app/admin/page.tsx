@@ -9,6 +9,8 @@ import { deleteProductAction } from "@/app/actions/admin/products/deleteProductA
 export default function AdminPanelPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [showConfirm, setShowConfirm] = useState<string | null>(null); // Silinecek ürün ID'si
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,25 +29,30 @@ export default function AdminPanelPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (productId: string) => {
-    const confirmed = confirm("Are you sure you want to delete this product?");
-    if (!confirmed) return;
+  const handleDelete = (productId: string) => {
+    setShowConfirm(productId);
+  };
 
-    const result = await deleteProductAction(productId);
+  const confirmDelete = async () => {
+    if (!showConfirm) return;
+
+    const result = await deleteProductAction(showConfirm);
+
     if (result.success) {
-      alert("Product deleted ✅");
-      setProducts(products.filter((p) => p.id !== productId));
+      setProducts(products.filter((p) => p.id !== showConfirm));
+      setMessage({ text: "Product deleted ✅", type: "success" });
     } else {
-      alert("Failed to delete product");
+      setMessage({ text: "Failed to delete product", type: "error" });
     }
+
+    setShowConfirm(null);
+    setTimeout(() => setMessage(null), 4000);
   };
 
   return (
-    <main className="max-w-5xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
+    <main className="max-w-5xl mx-auto py-10 px-6 bg-gray-900 min-h-screen relative">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-100">
-          Product Management
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-100">Product Management</h1>
         <Link
           href="/admin/products/new"
           className="bg-gray-100 text-gray-900 text-sm font-medium px-4 py-2 rounded-md hover:bg-white transition"
@@ -54,6 +61,19 @@ export default function AdminPanelPage() {
         </Link>
       </div>
 
+      {message && (
+        <div
+          className={`mb-6 p-3 rounded-md text-sm font-medium ${
+            message.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
+  
       {loading ? (
         <p className="text-gray-300">Loading...</p>
       ) : products.length === 0 ? (
@@ -97,6 +117,31 @@ export default function AdminPanelPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+    
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-md max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Are you sure you want to delete this product?
+            </h2>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowConfirm(null)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>

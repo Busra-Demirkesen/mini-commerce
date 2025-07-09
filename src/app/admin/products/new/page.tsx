@@ -4,6 +4,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewProductAction } from "@/app/actions/admin/products";
+import { productSchema } from "@/validations/productSchema";
+
+
+
+
 
 import {
   Category,
@@ -17,27 +22,7 @@ import SelectField from "@/components/shared/SelectField";
 import CheckboxGroup from "@/components/shared/CheckboxGroup";
 import DimensionFields from "@/components/shared/DimensionFields";
 
-const productSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description too short"),
-  category: z.nativeEnum(Category, { errorMap: () => ({ message: "Category is required" }) }),
-  availabilityStatus: z.nativeEnum(AvailabilityStatus),
-  returnPolicy: z.nativeEnum(ReturnPolicy),
-  price: z.coerce.number().min(0, "Price must be at least 0"),
-  stock: z.coerce.number().min(0, "Stock must be at least 0"),
-  brand: z.string().min(1, "Brand is required"),
-  sku: z.string().min(1, "SKU is required"),
-  weight: z.coerce.number().min(0, "Weight must be at least 0"),
-  warrantyInformation: z.string().min(1, "Warranty information is required"),
-  shippingInformation: z.string().min(1, "Shipping information is required"),
-  minimumOrderQuantity: z.coerce.number().min(1, "Minimum order quantity must be at least 1"),
-  tags: z.array(z.nativeEnum(Tag)).optional(),
-  dimensions: z.object({
-    width: z.coerce.number().min(0),
-    height: z.coerce.number().min(0),
-    depth: z.coerce.number().min(0),
-  }),
-});
+
 
 type ProductForm = z.infer<typeof productSchema>;
 
@@ -54,19 +39,19 @@ export default function NewProduct() {
       category: undefined,
       availabilityStatus: undefined,
       returnPolicy: undefined,
-      price: 0,
-      stock: 0,
+      price: undefined,
+      stock: undefined,
       brand: "",
       sku: "",
-      weight: 0,
+      weight: undefined,
       warrantyInformation: "",
       shippingInformation: "",
       minimumOrderQuantity: 1,
       tags: [],
       dimensions: {
-        width: 0,
-        height: 0,
-        depth: 0,
+        width: undefined,
+        height: undefined,
+        depth: undefined,
       },
     },
   });
@@ -85,7 +70,10 @@ export default function NewProduct() {
     formData.append("weight", data.weight.toString());
     formData.append("warrantyInformation", data.warrantyInformation);
     formData.append("shippingInformation", data.shippingInformation);
-    formData.append("minimumOrderQuantity", data.minimumOrderQuantity.toString());
+    formData.append(
+      "minimumOrderQuantity",
+      data.minimumOrderQuantity.toString()
+    );
 
     data.tags?.forEach((tag) => formData.append("tags", tag));
 
@@ -109,7 +97,10 @@ export default function NewProduct() {
         </h1>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 gap-6"
+      >
         <InputField
           label="Title"
           placeholder="Enter product title"
@@ -191,7 +182,9 @@ export default function NewProduct() {
           error={errors.minimumOrderQuantity?.message}
         />
 
-        <h2 className="text-md font-semibold text-gray-100">Product Dimensions</h2>
+        <h2 className="text-md font-semibold text-gray-100">
+          Product Dimensions
+        </h2>
         <DimensionFields register={register} errors={errors.dimensions} />
 
         <CheckboxGroup
