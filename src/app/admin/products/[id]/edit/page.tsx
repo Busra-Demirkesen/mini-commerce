@@ -54,11 +54,8 @@ export default function EditProductPage() {
         const docRef = doc(db, "products", id as string);
         const docSnap = await getDoc(docRef);
 
-        console.log("Fetched docSnap:", docSnap);
-
         if (docSnap.exists()) {
           const data = docSnap.data() as Product;
-          console.log("Fetched data:", data);
 
           setValue("title", data.title);
           setValue("description", data.description);
@@ -69,7 +66,6 @@ export default function EditProductPage() {
           setValue("returnPolicy", data.returnPolicy);
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions);
-
         } else {
           console.log("No such document!");
         }
@@ -95,11 +91,11 @@ export default function EditProductPage() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-gray-300">Loading...</p>;
 
   return (
-    <main className="max-w-4xl mx-auto py-10 px-6">
-      <h1 className="text-3xl font-bold mb-8">Edit Product</h1>
+    <main className="max-w-4xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
+      <h1 className="text-3xl font-bold mb-8 text-gray-100">Edit Product</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
         <InputField
           label="Title"
@@ -151,13 +147,12 @@ export default function EditProductPage() {
         <DimensionFields register={register} errors={errors.dimensions} />
 
         <div className="flex justify-end">
-         <button
-  type="submit"
-  className="px-6 py-2 bg-black text-white rounded-md hover:opacity-90"
->
-  Update Product
-</button>
-
+          <button
+            type="submit"
+            className="px-6 py-2 bg-gray-100 text-gray-900 rounded-md hover:bg-white transition"
+          >
+            Update Product
+          </button>
         </div>
       </form>
     </main>

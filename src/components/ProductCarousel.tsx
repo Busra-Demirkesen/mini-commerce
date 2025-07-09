@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef } from 'react';
@@ -24,17 +23,36 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
 
   return (
     <div className="relative">
-      <button onClick={() => scroll('left')} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 shadow rounded-full">
+      <button
+        onClick={() => scroll('left')}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 
+                   bg-white dark:bg-gray-700 
+                   text-gray-800 dark:text-gray-200 
+                   p-2 shadow rounded-full 
+                   hover:bg-gray-100 dark:hover:bg-gray-600
+                   transition"
+      >
         <ChevronLeft />
       </button>
 
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto no-scrollbar py-6 px-10 scroll-smooth">
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto no-scrollbar py-6 px-10 scroll-smooth"
+      >
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
-      <button onClick={() => scroll('right')} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 shadow rounded-full">
+      <button
+        onClick={() => scroll('right')}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 
+                   bg-white dark:bg-gray-700 
+                   text-gray-800 dark:text-gray-200 
+                   p-2 shadow rounded-full 
+                   hover:bg-gray-100 dark:hover:bg-gray-600
+                   transition"
+      >
         <ChevronRight />
       </button>
     </div>

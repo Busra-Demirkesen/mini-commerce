@@ -37,7 +37,6 @@ const productSchema = z.object({
     height: z.coerce.number().min(0),
     depth: z.coerce.number().min(0),
   }),
-  // Thumbnail ve images dosya upload için burada tanımlanmadı, ayrı handle edilir
 });
 
 type ProductForm = z.infer<typeof productSchema>;
@@ -72,8 +71,6 @@ export default function NewProduct() {
     },
   });
 
-  console.log("Validation errors:", errors);
-
   const onSubmit = async (data: ProductForm) => {
     const formData = new FormData();
     formData.append("title", data.title);
@@ -96,8 +93,6 @@ export default function NewProduct() {
     formData.append("dimensions.height", data.dimensions.height.toString());
     formData.append("dimensions.depth", data.dimensions.depth.toString());
 
-  
-
     const result = await addNewProductAction(undefined, formData);
     if (result.success) {
       alert("Product created successfully ✅");
@@ -107,9 +102,9 @@ export default function NewProduct() {
   };
 
   return (
-    <main className="max-w-4xl mx-auto py-10 px-6">
+    <main className="max-w-4xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-100">
           Add New Product
         </h1>
       </div>
@@ -196,7 +191,7 @@ export default function NewProduct() {
           error={errors.minimumOrderQuantity?.message}
         />
 
-        <h2 className="text-md font-semibold text-neutral-800">Product Dimensions</h2>
+        <h2 className="text-md font-semibold text-gray-100">Product Dimensions</h2>
         <DimensionFields register={register} errors={errors.dimensions} />
 
         <CheckboxGroup
@@ -224,7 +219,7 @@ export default function NewProduct() {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-6 py-2 bg-black text-white rounded-md hover:opacity-90"
+            className="px-6 py-2 bg-gray-100 text-gray-900 rounded-md hover:bg-white transition"
           >
             Add Product
           </button>

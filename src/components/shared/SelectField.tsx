@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 
 type Props = {
   label: string;
-  options: string[]; 
+  options: string[];
   name?: string;
   error?: string;
 } & React.SelectHTMLAttributes<HTMLSelectElement>;
@@ -10,8 +10,12 @@ type Props = {
 const SelectField = forwardRef<HTMLSelectElement, Props>(
   ({ label, options, error, ...rest }, ref) => (
     <div className="flex flex-col mb-4">
-      <label>{label}</label>
-      <select ref={ref} {...rest} className="p-2 border rounded">
+      <label className="mb-1 text-gray-900 dark:text-gray-100">{label}</label>
+      <select
+        ref={ref}
+        {...rest}
+        className="p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+      >
         <option value="">Seçiniz</option>
         {options.map((opt) => (
           <option key={opt} value={opt}>{opt}</option>
@@ -22,6 +26,6 @@ const SelectField = forwardRef<HTMLSelectElement, Props>(
   )
 );
 
-SelectField.displayName = "SelectField"; // 🔵 forwardRef için şart
+SelectField.displayName = "SelectField";
 
 export default SelectField;

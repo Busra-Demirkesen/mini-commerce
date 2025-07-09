@@ -41,52 +41,56 @@ export default function AdminPanelPage() {
   };
 
   return (
-    <main className="max-w-5xl mx-auto py-10 px-6">
+    <main className="max-w-5xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-100">
           Product Management
         </h1>
         <Link
           href="/admin/products/new"
-          className="bg-neutral-900 text-white text-sm font-medium px-4 py-2 rounded-md hover:opacity-90"
+          className="bg-gray-100 text-gray-900 text-sm font-medium px-4 py-2 rounded-md hover:bg-white transition"
         >
           Add New Product
         </Link>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-300">Loading...</p>
       ) : products.length === 0 ? (
-        <p className="text-neutral-500">No products found.</p>
+        <p className="text-gray-300">No products found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-neutral-200">
-          <table className="min-w-full divide-y divide-neutral-200">
-            <thead>
+        <div className="overflow-x-auto rounded-md border border-gray-700">
+          <table className="min-w-full divide-y divide-gray-700">
+            <thead className="bg-gray-800">
               <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Product Name</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Category</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Price</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Stock</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Status</th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-neutral-700">Actions</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Product Name</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Category</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Price</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Stock</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Status</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200">
+            <tbody className="divide-y divide-gray-700">
               {products.map((product) => (
-                <tr key={product.id}>
-                  <td className="px-4 py-2 text-sm text-neutral-900">{product.title}</td>
-                  <td className="px-4 py-2 text-sm text-neutral-900">{product.category}</td>
-                  <td className="px-4 py-2 text-sm text-neutral-900">{product.price} TL</td>
-                  <td className="px-4 py-2 text-sm text-neutral-900">{product.stock}</td>
-                  <td className="px-4 py-2 text-sm text-neutral-900">{product.availabilityStatus}</td>
-                  <td className="px-4 py-2 text-sm text-neutral-900 flex items-center space-x-2">
-                    <Link href={`/admin/products/${product.id}/edit`}>
-                      <PencilSquareIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-700 cursor-pointer" />
-
+                <tr key={product.id} className="bg-gray-900">
+                  <td className="px-4 py-2 text-sm text-gray-100">{product.title}</td>
+                  <td className="px-4 py-2 text-sm text-gray-100">{product.category}</td>
+                  <td className="px-4 py-2 text-sm text-gray-100">{product.price} TL</td>
+                  <td className="px-4 py-2 text-sm text-gray-100">{product.stock}</td>
+                  <td className="px-4 py-2 text-sm text-gray-100">{product.availabilityStatus}</td>
+                  <td className="px-4 py-2 text-sm text-gray-100 flex items-center space-x-2">
+                    <Link
+                      href={`/admin/products/${product.id}/edit`}
+                      className="bg-gray-100 text-gray-900 px-2 py-1 rounded hover:bg-white transition"
+                    >
+                      <PencilSquareIcon className="h-5 w-5" />
                     </Link>
-                    <button onClick={() => handleDelete(product.id)}>
-                      <TrashIcon className="h-5 w-5 text-neutral-500 hover:text-neutral-700 cursor-pointer" />
-
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="bg-gray-100 text-gray-900 px-2 py-1 rounded hover:bg-white transition"
+                    >
+                      <TrashIcon className="h-5 w-5" />
                     </button>
                   </td>
                 </tr>

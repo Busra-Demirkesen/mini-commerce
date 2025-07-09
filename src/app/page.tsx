@@ -8,7 +8,7 @@ export default async function HomePage() {
   const fragrances = await getProductsByCategory('fragrances');
 
   return (
-    <main className="py-10 space-y-12">
+    <main className="py-10 space-y-12 bg-gray-900">
 
 
 
