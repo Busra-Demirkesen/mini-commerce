@@ -1,13 +1,9 @@
-import { UseFormRegister } from "react-hook-form";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ProductForm } from "@/types/product";
 
 type Props = {
   register: UseFormRegister<ProductForm>;
-  errors?: {
-    width?: { message?: string };
-    height?: { message?: string };
-    depth?: { message?: string };
-  };
+  errors?: FieldErrors<ProductForm>["dimensions"];
 };
 
 export default function DimensionFields({ register, errors }: Props) {
@@ -18,6 +14,7 @@ export default function DimensionFields({ register, errors }: Props) {
       </label>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Width Field */}
         <div>
           <input
             type="number"
@@ -25,11 +22,12 @@ export default function DimensionFields({ register, errors }: Props) {
             {...register("dimensions.width")}
             className="p-2 border border-gray-300 dark:border-gray-600 rounded w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-300"
           />
-          {errors?.width?.message && (
+          {errors?.width && (
             <p className="text-red-500 text-sm">{errors.width.message}</p>
           )}
         </div>
 
+        {/* Height Field */}
         <div>
           <input
             type="number"
@@ -37,11 +35,12 @@ export default function DimensionFields({ register, errors }: Props) {
             {...register("dimensions.height")}
             className="p-2 border border-gray-300 dark:border-gray-600 rounded w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-300"
           />
-          {errors?.height?.message && (
+          {errors?.height && (
             <p className="text-red-500 text-sm">{errors.height.message}</p>
           )}
         </div>
 
+        {/* Depth Field */}
         <div>
           <input
             type="number"
@@ -49,7 +48,7 @@ export default function DimensionFields({ register, errors }: Props) {
             {...register("dimensions.depth")}
             className="p-2 border border-gray-300 dark:border-gray-600 rounded w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-300"
           />
-          {errors?.depth?.message && (
+          {errors?.depth && (
             <p className="text-red-500 text-sm">{errors.depth.message}</p>
           )}
         </div>

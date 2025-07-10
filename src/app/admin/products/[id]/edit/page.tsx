@@ -12,32 +12,19 @@ import DimensionFields from "@/components/shared/DimensionFields";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { editProductSchema } from "@/validations/productSchema";
 
-const productSchema = z.object({
-  title: z.string().min(3),
-  description: z.string().min(10),
-  category: z.nativeEnum(Category),
-  availabilityStatus: z.nativeEnum(AvailabilityStatus),
-  returnPolicy: z.nativeEnum(ReturnPolicy),
-  price: z.coerce.number().min(0),
-  stock: z.coerce.number().min(0),
-  tags: z.array(z.nativeEnum(Tag)).optional(),
-  dimensions: z.object({
-    width: z.coerce.number().min(0),
-    height: z.coerce.number().min(0),
-    depth: z.coerce.number().min(0),
-  }),
-});
-
-type ProductForm = z.infer<typeof productSchema>;
+// ✅ TypeScript form type
+type ProductForm = z.infer<typeof editProductSchema>;
 
 export default function EditProductPage() {
   const router = useRouter();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
 
+  // ✅ useForm with editProductSchema
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<ProductForm>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(editProductSchema),
     defaultValues: {
       tags: [],
       dimensions: {
@@ -48,6 +35,7 @@ export default function EditProductPage() {
     },
   });
 
+  // ✅ Fetch product data on mount
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -57,6 +45,7 @@ export default function EditProductPage() {
         if (docSnap.exists()) {
           const data = docSnap.data() as Product;
 
+          // ✅ Populate form values
           setValue("title", data.title);
           setValue("description", data.description);
           setValue("category", data.category);
@@ -79,6 +68,7 @@ export default function EditProductPage() {
     fetchProduct();
   }, [id, setValue]);
 
+  // ✅ Submit handler
   const onSubmit = async (data: ProductForm) => {
     try {
       const docRef = doc(db, "products", id as string);
@@ -130,7 +120,7 @@ export default function EditProductPage() {
           name="tags"
           options={Object.values(Tag)}
           register={register}
-          error={errors.tags?.[0]}
+          error={errors.tags?.message || errors.tags?.[0]?.message}
         />
         <SelectField
           label="Availability Status"

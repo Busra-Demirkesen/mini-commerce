@@ -10,7 +10,7 @@ export default function AdminPanelPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
-  const [showConfirm, setShowConfirm] = useState<string | null>(null); // Silinecek ürün ID'si
+  const [showConfirm, setShowConfirm] = useState<number | null>(null); // ✅ Silinecek ürün ID'si artık number
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,14 +29,14 @@ export default function AdminPanelPage() {
     fetchProducts();
   }, []);
 
-  const handleDelete = (productId: string) => {
+  const handleDelete = (productId: number) => {
     setShowConfirm(productId);
   };
 
   const confirmDelete = async () => {
-    if (!showConfirm) return;
+    if (showConfirm === null) return;
 
-    const result = await deleteProductAction(showConfirm);
+    const result = await deleteProductAction(showConfirm.toString());
 
     if (result.success) {
       setProducts(products.filter((p) => p.id !== showConfirm));
@@ -73,7 +73,6 @@ export default function AdminPanelPage() {
         </div>
       )}
 
-  
       {loading ? (
         <p className="text-gray-300">Loading...</p>
       ) : products.length === 0 ? (
@@ -120,8 +119,7 @@ export default function AdminPanelPage() {
         </div>
       )}
 
-    
-      {showConfirm && (
+      {showConfirm !== null && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-md max-w-sm w-full">
             <h2 className="text-lg font-semibold mb-4 text-gray-800">
