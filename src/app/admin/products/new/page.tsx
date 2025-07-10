@@ -5,10 +5,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewProductAction } from "@/app/actions/admin/products";
 import { productSchema } from "@/validations/productSchema";
-
-
-
-
+import { useState } from "react";
+import Image from "next/image";
 
 import {
   Category,
@@ -21,8 +19,6 @@ import InputField from "@/components/shared/InputField";
 import SelectField from "@/components/shared/SelectField";
 import CheckboxGroup from "@/components/shared/CheckboxGroup";
 import DimensionFields from "@/components/shared/DimensionFields";
-
-
 
 type ProductForm = z.infer<typeof productSchema>;
 
@@ -56,8 +52,18 @@ export default function NewProduct() {
     },
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   const onSubmit = async (data: ProductForm) => {
     const formData = new FormData();
+
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("category", data.category);
@@ -80,6 +86,11 @@ export default function NewProduct() {
     formData.append("dimensions.width", data.dimensions.width.toString());
     formData.append("dimensions.height", data.dimensions.height.toString());
     formData.append("dimensions.depth", data.dimensions.depth.toString());
+
+    // ✅ Image ekleme
+    if (data.image && data.image[0]) {
+      formData.append("image", data.image[0]);
+    }
 
     const result = await addNewProductAction(undefined, formData);
     if (result.success) {
@@ -208,6 +219,38 @@ export default function NewProduct() {
           {...register("returnPolicy")}
           error={errors.returnPolicy?.message}
         />
+
+        {/* ✅ Image input */}
+        <div className="flex flex-col">
+          <label htmlFor="image">Product Image</label>
+          <input
+            type="file"
+            accept=".jpeg, .jpg, .webp"
+            {...register("image")}
+            onChange={(e) => {
+              handleImageChange(e);
+              register("image").onChange(e);
+            }}
+            className="dark:bg-stone-200 dark:text-stone-900"
+          />
+
+          {errors.image && (
+            <p className="text-red-500 text-sm">
+              {errors.image.message as string}
+            </p>
+          )}
+
+          {imagePreview && (
+            <Image
+              src={imagePreview}
+              alt="Preview"
+              width={128}
+              height={128}
+              className="mt-2 rounded object-cover"
+              unoptimized
+            />
+          )}
+        </div>
 
         <div className="flex justify-end">
           <button
