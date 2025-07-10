@@ -91,7 +91,15 @@ export default function NewProduct() {
       formData.append("image", data.image[0]);
     }
 
-    const result = await addNewProductAction(undefined, formData);
+    const emptyState: NewProductFormState = {
+      success: false,
+      message: "",
+      inputs: {},
+      errors: {},
+    };
+
+    const result = await addNewProductAction(emptyState, formData);
+
     if (result.success) {
       alert("Product created successfully ✅");
     } else {
@@ -202,7 +210,8 @@ export default function NewProduct() {
           name="tags"
           options={Object.values(Tag)}
           register={register}
-          error={errors.tags?.[0]}
+          error={errors.tags?.[0]?.message}
+
         />
 
         <SelectField
@@ -264,10 +273,10 @@ export default function NewProduct() {
   );
 }
 
-/** ✅ Backend action importu için eksik olan type export */
 export type NewProductFormState = {
   success: boolean;
   message: string;
-  inputs?: any;
+  inputs?: Record<string, unknown>;
   errors?: Record<string, string[]>;
 };
+
