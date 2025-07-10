@@ -1,3 +1,8 @@
+import { z } from "zod";
+import { productSchema } from "@/validations/productSchema";
+
+export type ProductForm = z.infer<typeof productSchema>;
+
 export interface Product {
   id: number;
   title: string;

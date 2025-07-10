@@ -87,7 +87,6 @@ export default function NewProduct() {
     formData.append("dimensions.height", data.dimensions.height.toString());
     formData.append("dimensions.depth", data.dimensions.depth.toString());
 
-    // ✅ Image ekleme
     if (data.image && data.image[0]) {
       formData.append("image", data.image[0]);
     }
@@ -264,3 +263,11 @@ export default function NewProduct() {
     </main>
   );
 }
+
+/** ✅ Backend action importu için eksik olan type export */
+export type NewProductFormState = {
+  success: boolean;
+  message: string;
+  inputs?: any;
+  errors?: Record<string, string[]>;
+};
