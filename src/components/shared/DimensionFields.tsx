@@ -1,12 +1,9 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { ProductForm } from "@/types/product";
 
 type Props = {
-  register: UseFormRegister<any>;
-  errors?: {
-    width?: { message?: string };
-    height?: { message?: string };
-    depth?: { message?: string };
-  };
+  register: UseFormRegister<ProductForm>;
+  errors?: FieldErrors<ProductForm>["dimensions"];
 };
 
 export default function DimensionFields({ register, errors }: Props) {
