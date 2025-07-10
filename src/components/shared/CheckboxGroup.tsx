@@ -15,10 +15,10 @@ export default function CheckboxGroup({
 }: Props) {
   return (
     <div className="flex flex-col mb-4">
-      <label className="mb-2 font-medium">{label}</label>
+      <label className="mb-2 font-medium ">{label}</label>
       <div className="flex gap-4 flex-wrap">
         {options.map((option) => (
-          <label key={option} className="flex items-center gap-2">
+          <label key={option} className="flex items-center gap-2 text-white">
             <input
               type="checkbox"
               value={option}
