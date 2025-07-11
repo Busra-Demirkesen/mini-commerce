@@ -115,7 +115,7 @@ export default function EditProductPage() {
           {...register("stock")}
           error={errors.stock?.message}
         />
-        <CheckboxGroup
+        <CheckboxGroup<ProductForm>
           label="Tags"
           name="tags"
           options={Object.values(Tag)}
@@ -134,8 +134,10 @@ export default function EditProductPage() {
           {...register("returnPolicy")}
           error={errors.returnPolicy?.message}
         />
-        <DimensionFields register={register} errors={errors.dimensions} />
-
+        <DimensionFields<ProductForm>
+          register={register}
+          errors={errors.dimensions}
+        />
         <div className="flex justify-end">
           <button
             type="submit"

@@ -1,23 +1,22 @@
 "use client";
 
-import { UseFormRegister } from "react-hook-form";
-import { ProductForm } from "@/types/forms"; // form tipin neredeyse
+import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 
-type Props = {
+type Props<T extends FieldValues> = {
   label: string;
-  name: keyof ProductForm; // ✅ keyof kullan, string değil
+  name: Path<T>; // ✅ Path<T> kullan, type-safe
   options: string[];
-  register: UseFormRegister<ProductForm>;
+  register: UseFormRegister<T>;
   error?: string;
 };
 
-export default function CheckboxGroup({
+export default function CheckboxGroup<T extends FieldValues>({
   label,
   name,
   options,
   register,
   error,
-}: Props) {
+}: Props<T>) {
   return (
     <div className="flex flex-col mb-4">
       <label className="mb-2 font-medium">{label}</label>
