@@ -3,6 +3,16 @@ import { productSchema } from "@/validations/productSchema";
 
 export type ProductForm = z.infer<typeof productSchema>;
 
+// ✅ Eğer edit için partial schema kullanıyorsan ekle:
+export type ProductFormEdit = Partial<ProductForm>;
+
+// ✅ Dimensions spelling fix
+export interface Dimensions {
+  width: number;
+  height: number;
+  depth: number;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -12,11 +22,11 @@ export interface Product {
   discountPercentage?: number;
   rating?: number;
   stock: number;
-tags?: Tag[];
+  tags?: Tag[];
   brand: string;
   sku: string;
   weight: number;
-  dimensions: Dimentions;
+  dimensions: Dimensions;
   warrantyInformation: string;
   shippingInformation: string;
   availabilityStatus: AvailabilityStatus;
@@ -36,15 +46,13 @@ export enum Tag {
   LIMITED = 'limited',
 }
 
-
 export enum Category {
   FRAGRANCES = 'fragrances',
   BEAUTY = 'beauty',
-  GROCERIES = 'groceries', 
+  GROCERIES = 'groceries',
 }
 
-
-export const allCategories = Object.values(Category); 
+export const allCategories = Object.values(Category);
 
 export enum AvailabilityStatus {
   IN_STOCK = 'In Stock',
@@ -58,12 +66,6 @@ export enum ReturnPolicy {
   DAYS_30 = '30 days return policy',
   DAYS_60 = '60 days return policy',
   DAYS_90 = '90 days return policy',
-}
-
-export interface Dimentions {
-  width: number;
-  height: number;
-  depth: number;
 }
 
 export interface Review {

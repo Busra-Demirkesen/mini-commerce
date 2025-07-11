@@ -1,30 +1,27 @@
 "use client";
 
-import {
-  UseFormRegister,
-  FieldErrors,
-  FieldValues,
-  Path,
-} from "react-hook-form";
+import { UseFormRegister, FieldErrors, FieldValues, Path } from "react-hook-form";
 
 type Props<T extends FieldValues> = {
   register: UseFormRegister<T>;
-  errors?: FieldErrors<T>["dimensions"] & {
-    width?: { message?: string };
-    height?: { message?: string };
-    depth?: { message?: string };
-  };
+  errors?: FieldErrors<T>;
 };
 
 export default function DimensionFields<T extends FieldValues>({
   register,
   errors,
 }: Props<T>) {
+  const dimensionsErrors = errors?.dimensions as Record<
+    "width" | "height" | "depth",
+    { message?: string }
+  > | undefined;
+
   return (
     <div className="flex flex-col mb-4">
       <label className="font-medium mb-2 text-gray-100">Dimensions</label>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Width */}
         <div>
           <input
             type="number"
@@ -32,11 +29,12 @@ export default function DimensionFields<T extends FieldValues>({
             {...register("dimensions.width" as Path<T>)}
             className="p-2 border rounded w-full"
           />
-          {errors?.width?.message && (
-            <p className="text-red-500 text-sm">{errors.width.message}</p>
+          {dimensionsErrors?.width?.message && (
+            <p className="text-red-500 text-sm">{dimensionsErrors.width.message}</p>
           )}
         </div>
 
+        {/* Height */}
         <div>
           <input
             type="number"
@@ -44,11 +42,12 @@ export default function DimensionFields<T extends FieldValues>({
             {...register("dimensions.height" as Path<T>)}
             className="p-2 border rounded w-full"
           />
-          {errors?.height?.message && (
-            <p className="text-red-500 text-sm">{errors.height.message}</p>
+          {dimensionsErrors?.height?.message && (
+            <p className="text-red-500 text-sm">{dimensionsErrors.height.message}</p>
           )}
         </div>
 
+        {/* Depth */}
         <div>
           <input
             type="number"
@@ -56,8 +55,8 @@ export default function DimensionFields<T extends FieldValues>({
             {...register("dimensions.depth" as Path<T>)}
             className="p-2 border rounded w-full"
           />
-          {errors?.depth?.message && (
-            <p className="text-red-500 text-sm">{errors.depth.message}</p>
+          {dimensionsErrors?.depth?.message && (
+            <p className="text-red-500 text-sm">{dimensionsErrors.depth.message}</p>
           )}
         </div>
       </div>

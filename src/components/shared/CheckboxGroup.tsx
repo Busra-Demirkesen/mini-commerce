@@ -1,10 +1,8 @@
-"use client";
-
 import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 
 type Props<T extends FieldValues> = {
   label: string;
-  name: Path<T>; // ✅ Path<T> kullan, type-safe
+  name: Path<T>;
   options: string[];
   register: UseFormRegister<T>;
   error?: string;
