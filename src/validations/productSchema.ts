@@ -62,10 +62,15 @@ export const productSchema = z.object({
     depth: z.coerce.number()
       .min(0, "Depth must be at least 0"),
   }),
+
   image: z.any().optional(),
+
+  // ✅ Added images field (array of strings)
+  images: z.array(z.string()).optional(),
 });
 
-export const editProductSchema = productSchema.partial();
+// validations/productSchema.ts
+export const editProductSchema = productSchema;
 
 console.log("✅ Category:", Category);
 console.log("✅ AvailabilityStatus:", AvailabilityStatus);

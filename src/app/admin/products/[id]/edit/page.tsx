@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Product, Category, AvailabilityStatus, ReturnPolicy, Tag } from "@/types/product";
+import {
+  Product,
+  Category,
+  AvailabilityStatus,
+  ReturnPolicy,
+  Tag,
+} from "@/types/product";
 import InputField from "@/components/shared/InputField";
 import SelectField from "@/components/shared/SelectField";
 import CheckboxGroup from "@/components/shared/CheckboxGroup";
@@ -21,15 +27,34 @@ export default function EditProductPage() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<EditProductForm>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<EditProductForm>({
     resolver: zodResolver(editProductSchema),
     defaultValues: {
+      title: "",
+      description: "",
+      category: Category.BEAUTY,
+      availabilityStatus: AvailabilityStatus.IN_STOCK,
+      returnPolicy: ReturnPolicy.NO_RETURN,
+      price: 0,
+      stock: 0,
+      brand: "",
+      sku: "",
+      weight: 0,
+      warrantyInformation: "",
+      shippingInformation: "",
+      minimumOrderQuantity: 1,
       tags: [],
       dimensions: {
         width: 0,
         height: 0,
         depth: 0,
       },
+      image: undefined,
     },
   });
 
@@ -41,15 +66,25 @@ export default function EditProductPage() {
 
         if (docSnap.exists()) {
           const data = docSnap.data() as Product;
+
+          // ✅ setValue with all required fields
           setValue("title", data.title ?? "");
           setValue("description", data.description ?? "");
           setValue("category", data.category ?? Category.BEAUTY);
-          setValue("price", data.price ?? 0);
-          setValue("stock", data.stock ?? 0);
           setValue("availabilityStatus", data.availabilityStatus ?? AvailabilityStatus.IN_STOCK);
           setValue("returnPolicy", data.returnPolicy ?? ReturnPolicy.NO_RETURN);
+          setValue("price", data.price ?? 0);
+          setValue("stock", data.stock ?? 0);
+          setValue("brand", data.brand ?? "");
+          setValue("sku", data.sku ?? "");
+          setValue("weight", data.weight ?? 0);
+          setValue("warrantyInformation", data.warrantyInformation ?? "");
+          setValue("shippingInformation", data.shippingInformation ?? "");
+          setValue("minimumOrderQuantity", data.minimumOrderQuantity ?? 1);
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions || { width: 0, height: 0, depth: 0 });
+          setValue("images", data.images ?? []);
+
         } else {
           console.log("No such document!");
         }
@@ -86,6 +121,12 @@ export default function EditProductPage() {
         <SelectField label="Category" options={Object.values(Category)} {...register("category")} error={errors.category?.message} />
         <InputField label="Price" type="number" {...register("price")} error={errors.price?.message} />
         <InputField label="Stock" type="number" {...register("stock")} error={errors.stock?.message} />
+        <InputField label="Brand" {...register("brand")} error={errors.brand?.message} />
+        <InputField label="SKU" {...register("sku")} error={errors.sku?.message} />
+        <InputField label="Weight" type="number" {...register("weight")} error={errors.weight?.message} />
+        <InputField label="Warranty Information" {...register("warrantyInformation")} error={errors.warrantyInformation?.message} />
+        <InputField label="Shipping Information" {...register("shippingInformation")} error={errors.shippingInformation?.message} />
+        <InputField label="Minimum Order Quantity" type="number" {...register("minimumOrderQuantity")} error={errors.minimumOrderQuantity?.message} />
 
         <CheckboxGroup<EditProductForm>
           label="Tags"
