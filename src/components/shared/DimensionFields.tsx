@@ -1,5 +1,5 @@
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ProductForm } from "@/types/product";
+import { ProductForm } from "@/types/forms";
 
 type Props = {
   register: UseFormRegister<ProductForm>;
