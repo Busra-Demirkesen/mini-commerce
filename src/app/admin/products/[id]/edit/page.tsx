@@ -55,6 +55,7 @@ export default function EditProductPage() {
         depth: 0,
       },
       image: undefined,
+      images: [], // ✅ images field added for upload compatibility
     },
   });
 
@@ -67,7 +68,6 @@ export default function EditProductPage() {
         if (docSnap.exists()) {
           const data = docSnap.data() as Product;
 
-          // ✅ setValue with all required fields
           setValue("title", data.title ?? "");
           setValue("description", data.description ?? "");
           setValue("category", data.category ?? Category.BEAUTY);
@@ -83,8 +83,7 @@ export default function EditProductPage() {
           setValue("minimumOrderQuantity", data.minimumOrderQuantity ?? 1);
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions || { width: 0, height: 0, depth: 0 });
-          setValue("images", data.images ?? []);
-
+          setValue("images", data.images ?? []); // ✅ keep images for upload
         } else {
           console.log("No such document!");
         }
