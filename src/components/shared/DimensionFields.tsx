@@ -1,6 +1,6 @@
 "use client";
 
-import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { EditProductForm } from "@/types/forms";
 
 type Props = {
@@ -21,10 +21,10 @@ export default function DimensionFields({ register, errors }: Props) {
           <input
             type="number"
             placeholder="Width"
-            {...register("dimensions.width" as Path<EditProductForm>)}
+            {...register("dimensions.width")}
             className="p-2 border rounded w-full"
           />
-          {dimensionsErrors?.width?.message && (
+          {dimensionsErrors?.width && (
             <p className="text-red-500 text-sm">{dimensionsErrors.width.message}</p>
           )}
         </div>
@@ -34,10 +34,10 @@ export default function DimensionFields({ register, errors }: Props) {
           <input
             type="number"
             placeholder="Height"
-            {...register("dimensions.height" as Path<EditProductForm>)}
+            {...register("dimensions.height")}
             className="p-2 border rounded w-full"
           />
-          {dimensionsErrors?.height?.message && (
+          {dimensionsErrors?.height && (
             <p className="text-red-500 text-sm">{dimensionsErrors.height.message}</p>
           )}
         </div>
@@ -47,10 +47,10 @@ export default function DimensionFields({ register, errors }: Props) {
           <input
             type="number"
             placeholder="Depth"
-            {...register("dimensions.depth" as Path<EditProductForm>)}
+            {...register("dimensions.depth")}
             className="p-2 border rounded w-full"
           />
-          {dimensionsErrors?.depth?.message && (
+          {dimensionsErrors?.depth && (
             <p className="text-red-500 text-sm">{dimensionsErrors.depth.message}</p>
           )}
         </div>
