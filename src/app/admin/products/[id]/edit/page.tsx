@@ -4,26 +4,33 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Product, Category, AvailabilityStatus, ReturnPolicy, Tag } from "@/types/product";
+import {
+  Product,
+  Category,
+  AvailabilityStatus,
+  ReturnPolicy,
+  Tag,
+} from "@/types/product";
 import InputField from "@/components/shared/InputField";
 import SelectField from "@/components/shared/SelectField";
 import CheckboxGroup from "@/components/shared/CheckboxGroup";
 import DimensionFields from "@/components/shared/DimensionFields";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editProductSchema } from "@/validations/productSchema";
-
-// ✅ TypeScript form type
-type ProductForm = z.infer<typeof editProductSchema>;
+import { EditProductForm } from "@/types/forms";
 
 export default function EditProductPage() {
   const router = useRouter();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
 
-  // ✅ useForm with editProductSchema
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<ProductForm>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<EditProductForm>({
     resolver: zodResolver(editProductSchema),
     defaultValues: {
       tags: [],
@@ -35,7 +42,6 @@ export default function EditProductPage() {
     },
   });
 
-  // ✅ Fetch product data on mount
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -45,7 +51,6 @@ export default function EditProductPage() {
         if (docSnap.exists()) {
           const data = docSnap.data() as Product;
 
-          // ✅ Populate form values
           setValue("title", data.title);
           setValue("description", data.description);
           setValue("category", data.category);
@@ -68,8 +73,7 @@ export default function EditProductPage() {
     fetchProduct();
   }, [id, setValue]);
 
-  // ✅ Submit handler
-  const onSubmit = async (data: ProductForm) => {
+  const onSubmit = async (data: EditProductForm) => {
     try {
       const docRef = doc(db, "products", id as string);
       await updateDoc(docRef, data);
@@ -86,7 +90,10 @@ export default function EditProductPage() {
   return (
     <main className="max-w-4xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
       <h1 className="text-3xl font-bold mb-8 text-gray-100">Edit Product</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 gap-6"
+      >
         <InputField
           label="Title"
           {...register("title")}
@@ -115,13 +122,13 @@ export default function EditProductPage() {
           {...register("stock")}
           error={errors.stock?.message}
         />
-       <CheckboxGroup<ProductForm>
-  label="Tags"
-  name="tags"
-  options={Object.values(Tag)}
-  register={register}
-  error={errors.tags?.message || errors.tags?.[0]?.message}
-/>
+        <CheckboxGroup<EditProductForm>
+          label="Tags"
+          name="tags"
+          options={Object.values(Tag)}
+          register={register}
+          error={errors.tags?.[0]?.message}
+        />
         <SelectField
           label="Availability Status"
           options={Object.values(AvailabilityStatus)}
@@ -134,7 +141,10 @@ export default function EditProductPage() {
           {...register("returnPolicy")}
           error={errors.returnPolicy?.message}
         />
-        <DimensionFields<ProductForm> register={register} errors={errors.dimensions} />
+        <DimensionFields<EditProductForm>
+          register={register}
+          errors={errors.dimensions}
+        />
         <div className="flex justify-end">
           <button
             type="submit"
