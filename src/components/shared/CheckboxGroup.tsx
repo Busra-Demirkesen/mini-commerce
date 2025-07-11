@@ -1,20 +1,21 @@
-import { UseFormRegister, FieldValues, Path } from "react-hook-form";
+import { UseFormRegister, Path } from "react-hook-form";
+import { EditProductForm } from "@/types/forms";
 
-type Props<T extends FieldValues> = {
+type Props = {
   label: string;
-  name: Path<T>;
+  name: Path<EditProductForm>;
   options: string[];
-  register: UseFormRegister<T>;
+  register: UseFormRegister<EditProductForm>;
   error?: string;
 };
 
-export default function CheckboxGroup<T extends FieldValues>({
+export default function CheckboxGroup({
   label,
   name,
   options,
   register,
   error,
-}: Props<T>) {
+}: Props) {
   return (
     <div className="flex flex-col mb-4">
       <label className="mb-2 font-medium">{label}</label>

@@ -1,20 +1,15 @@
 "use client";
 
-import { UseFormRegister, FieldErrors, FieldValues, Path } from "react-hook-form";
+import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
+import { EditProductForm } from "@/types/forms";
 
-type Props<T extends FieldValues> = {
-  register: UseFormRegister<T>;
-  errors?: FieldErrors<T>;
+type Props = {
+  register: UseFormRegister<EditProductForm>;
+  errors?: FieldErrors<EditProductForm>;
 };
 
-export default function DimensionFields<T extends FieldValues>({
-  register,
-  errors,
-}: Props<T>) {
-  const dimensionsErrors = errors?.dimensions as Record<
-    "width" | "height" | "depth",
-    { message?: string }
-  > | undefined;
+export default function DimensionFields({ register, errors }: Props) {
+  const dimensionsErrors = errors?.dimensions;
 
   return (
     <div className="flex flex-col mb-4">
@@ -26,7 +21,7 @@ export default function DimensionFields<T extends FieldValues>({
           <input
             type="number"
             placeholder="Width"
-            {...register("dimensions.width" as Path<T>)}
+            {...register("dimensions.width" as Path<EditProductForm>)}
             className="p-2 border rounded w-full"
           />
           {dimensionsErrors?.width?.message && (
@@ -39,7 +34,7 @@ export default function DimensionFields<T extends FieldValues>({
           <input
             type="number"
             placeholder="Height"
-            {...register("dimensions.height" as Path<T>)}
+            {...register("dimensions.height" as Path<EditProductForm>)}
             className="p-2 border rounded w-full"
           />
           {dimensionsErrors?.height?.message && (
@@ -52,7 +47,7 @@ export default function DimensionFields<T extends FieldValues>({
           <input
             type="number"
             placeholder="Depth"
-            {...register("dimensions.depth" as Path<T>)}
+            {...register("dimensions.depth" as Path<EditProductForm>)}
             className="p-2 border rounded w-full"
           />
           {dimensionsErrors?.depth?.message && (
