@@ -55,7 +55,7 @@ export default function EditProductPage() {
         depth: 0,
       },
       image: undefined,
-      images: [], // ✅ images field added for upload compatibility
+      images: [],
     },
   });
 
@@ -83,7 +83,7 @@ export default function EditProductPage() {
           setValue("minimumOrderQuantity", data.minimumOrderQuantity ?? 1);
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions || { width: 0, height: 0, depth: 0 });
-          setValue("images", data.images ?? []); // ✅ keep images for upload
+          setValue("images", data.images ?? []);
         } else {
           console.log("No such document!");
         }
@@ -127,7 +127,7 @@ export default function EditProductPage() {
         <InputField label="Shipping Information" {...register("shippingInformation")} error={errors.shippingInformation?.message} />
         <InputField label="Minimum Order Quantity" type="number" {...register("minimumOrderQuantity")} error={errors.minimumOrderQuantity?.message} />
 
-        <CheckboxGroup<EditProductForm>
+        <CheckboxGroup
           label="Tags"
           name="tags"
           options={Object.values(Tag)}
@@ -138,7 +138,7 @@ export default function EditProductPage() {
         <SelectField label="Availability Status" options={Object.values(AvailabilityStatus)} {...register("availabilityStatus")} error={errors.availabilityStatus?.message} />
         <SelectField label="Return Policy" options={Object.values(ReturnPolicy)} {...register("returnPolicy")} error={errors.returnPolicy?.message} />
 
-        <DimensionFields<EditProductForm> register={register} errors={errors.dimensions} />
+        <DimensionFields register={register} errors={errors} />
 
         <div className="flex justify-end">
           <button type="submit" className="px-6 py-2 bg-gray-100 text-gray-900 rounded-md hover:bg-white transition">
