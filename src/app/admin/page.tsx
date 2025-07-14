@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types/product";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { deleteProductAction } from "@/app/actions/admin/products/deleteProductAction";
+import Image from "next/image";
 
 export default function AdminPanelPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -83,6 +84,7 @@ export default function AdminPanelPage() {
             <thead className="bg-gray-800">
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Product Name</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Image</th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Category</th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Price</th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-200">Stock</th>
@@ -94,6 +96,17 @@ export default function AdminPanelPage() {
               {products.map((product) => (
                 <tr key={product.id} className="bg-gray-900">
                   <td className="px-4 py-2 text-sm text-gray-100">{product.title}</td>
+                  <td className="px-4 py-2 text-sm text-gray-100">
+                    {product.imageUrl && (
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.title}
+                        width={50}
+                        height={50}
+                        className="object-cover rounded"
+                      />
+                    )}
+                  </td>
                   <td className="px-4 py-2 text-sm text-gray-100">{product.category}</td>
                   <td className="px-4 py-2 text-sm text-gray-100">{product.price} TL</td>
                   <td className="px-4 py-2 text-sm text-gray-100">{product.stock}</td>

@@ -19,6 +19,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editProductSchema } from "@/validations/productSchema";
 import { z } from "zod";
+import { updateProductAction } from "@/app/actions/admin/products"; // updateProductAction eklendi
+import Image from "next/image"; // Image bileşeni eklendi
 
 type EditProductForm = z.infer<typeof editProductSchema>;
 
@@ -26,6 +28,7 @@ export default function EditProductPage() {
   const router = useRouter();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -84,6 +87,10 @@ export default function EditProductPage() {
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions || { width: 0, height: 0, depth: 0 });
           setValue("images", data.images ?? []);
+          // Mevcut görseli önizlemek için ayarla
+          if (data.imageUrl) {
+            setImagePreview(data.imageUrl);
+          }
         } else {
           console.log("No such document!");
         }
@@ -97,12 +104,53 @@ export default function EditProductPage() {
     fetchProduct();
   }, [id, setValue]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   const onSubmit = async (data: EditProductForm) => {
+    // FormData oluştur ve görseli ekle
+    const formData = new FormData();
+
+    // Tüm alanları formData'ya ekle
+    for (const key in data) {
+      if (key === "tags") {
+        data.tags?.forEach((tag) => formData.append("tags", tag));
+      } else if (key === "dimensions") {
+        formData.append("dimensions.width", data.dimensions.width.toString());
+        formData.append("dimensions.height", data.dimensions.height.toString());
+        formData.append("dimensions.depth", data.dimensions.depth.toString());
+      } else if (key === "image" && data.image && data.image[0]) {
+        formData.append("image", data.image[0]);
+      } else if (key !== "image" && data[key] !== undefined && data[key] !== null) {
+        // `images` gibi diğer dosya dizilerini veya undefined/null değerleri atla
+        formData.append(key, data[key].toString());
+      }
+    }
+
+    // Ürün ID'sini FormData'ya ekle
+    formData.append("id", id as string);
+
+    const emptyState = {
+      success: false,
+      message: "",
+      inputs: {},
+      errors: {},
+    };
+
     try {
-      const docRef = doc(db, "products", id as string);
-      await updateDoc(docRef, data);
-      alert("Product updated successfully ✅");
-      router.push("/admin/products");
+      const result = await updateProductAction(emptyState, formData); // Yeni action çağrısı
+
+      if (result.success) {
+        alert("Product updated successfully ✅");
+        router.push("/admin/products");
+      } else {
+        console.error("Backend validation error for update:", result.errors);
+        alert("Failed to update product: " + result.message);
+      }
     } catch (error) {
       console.error("Error updating product:", error);
       alert("Failed to update product");
@@ -126,6 +174,37 @@ export default function EditProductPage() {
         <InputField label="Warranty Information" {...register("warrantyInformation")} error={errors.warrantyInformation?.message} />
         <InputField label="Shipping Information" {...register("shippingInformation")} error={errors.shippingInformation?.message} />
         <InputField label="Minimum Order Quantity" type="number" {...register("minimumOrderQuantity")} error={errors.minimumOrderQuantity?.message} />
+
+        {/* Yeni Eklenen Görsel Input Alanı */}
+        <div className="flex flex-col">
+          <label htmlFor="image" className="text-gray-100 mb-2">Product Image</label>
+          <input
+            type="file"
+            accept=".jpeg, .jpg, .webp, .png"
+            {...register("image")}
+            onChange={(e) => {
+              handleImageChange(e);
+              register("image").onChange(e);
+            }}
+            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
+          />
+          {imagePreview && (
+            <div className="mt-4">
+              <Image
+                src={imagePreview}
+                alt="Product Preview"
+                width={200}
+                height={200}
+                className="object-cover rounded-md shadow-md"
+              />
+            </div>
+          )}
+          {errors.image && (
+            <p className="text-red-500 text-sm">
+              {errors.image.message as string}
+            </p>
+          )}
+        </div>
 
         <CheckboxGroup
           label="Tags"

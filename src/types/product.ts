@@ -36,6 +36,7 @@ export interface Product {
   meta: Meta;
   images: string[];
   thumbnail: string;
+  imageUrl?: string; // ✅ Eklendi: Firestore'a kaydedilen görsel URL'si
 }
 
 export enum Tag {

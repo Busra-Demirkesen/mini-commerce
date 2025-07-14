@@ -100,6 +100,8 @@ export default function NewProduct() {
 
     const result = await addNewProductAction(emptyState, formData);
 
+    console.log("Result from addNewProductAction:", result);
+
     if (result.success) {
       alert("Product created successfully ✅");
     } else {
@@ -242,21 +244,22 @@ export default function NewProduct() {
             className="dark:bg-stone-200 dark:text-stone-900"
           />
 
+          {imagePreview && (
+            <div className="mt-4">
+              <Image
+                src={imagePreview}
+                alt="Product Preview"
+                width={200}
+                height={200}
+                className="object-cover rounded-md shadow-md"
+              />
+            </div>
+          )}
+
           {errors.image && (
             <p className="text-red-500 text-sm">
               {errors.image.message as string}
             </p>
-          )}
-
-          {imagePreview && (
-            <Image
-              src={imagePreview}
-              alt="Preview"
-              width={128}
-              height={128}
-              className="mt-2 rounded object-cover"
-              unoptimized
-            />
           )}
         </div>
 

@@ -65,8 +65,8 @@ export const productSchema = z.object({
 
   image: z.any().optional(),
 
-  // ✅ Added images field (array of strings)
-  images: z.array(z.string()).optional(),
+
+
 });
 
 // validations/productSchema.ts
