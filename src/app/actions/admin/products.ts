@@ -44,11 +44,27 @@ export async function addNewProductAction(
   if (!result.success) {
     console.warn('❌ Validation failed:', result.error.format());
     console.warn('Full Zod error object:', result.error);
+
+    const errors = result.error.flatten().fieldErrors;
+    const formErrors = result.error.flatten().formErrors;
+
+    // Eğer alan bazlı hata yoksa ama form hatası varsa, bunu da ekleyelim
+    if (Object.keys(errors).length === 0 && formErrors.length > 0) {
+        // formErrors'u inputs ile ilişkilendirmek için bir yol bulmamız gerekebilir
+        // Şimdilik, genel bir hata mesajı olarak ekleyelim
+        return {
+            success: false,
+            message: formErrors[0] || 'Please correct the form input',
+            inputs: rawData,
+            errors: { general: formErrors }, // Genel hataları 'general' altına ekle
+        };
+    }
+
     return {
       success: false,
       message: 'Please correct the form input',
       inputs: rawData,
-      errors: result.error.flatten().fieldErrors,
+      errors: errors,
     };
   }
 

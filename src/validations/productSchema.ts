@@ -64,7 +64,7 @@ export const productSchema = z.object({
   }),
 
   image: z.any().optional(),
-
+  imageUrl: z.string().optional(), // Eklendi: Ürün görseli URL'si
 
 
 });
