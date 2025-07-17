@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { Product, Category } from "@/types/product";
+import { Product } from "@/types/product";
 
 export default function ProductDetailPage() {
   const { addToCart } = useCart();
