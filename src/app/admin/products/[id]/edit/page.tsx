@@ -210,7 +210,7 @@ export default function EditProductPage() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {imagePreview && (
-            <div className="mt-4 w-auto h-auto max-w-sm max-h-sm relative">
+            <div className="mt-4 w-48 h-48 relative">
               <Image
                 src={imagePreview}
                 alt="Product Preview"

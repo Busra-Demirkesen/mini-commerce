@@ -29,7 +29,7 @@ export default function ProductDetailPage() {
     );
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12 bg-gray-900 min-h-screen">
+    <div className="max-w-6xl mx-auto px-6 py-12 bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         <div>
           <Image
@@ -41,21 +41,21 @@ export default function ProductDetailPage() {
           />
         </div>
         <div className="space-y-4">
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             {product.category}
           </p>
-          <h1 className="text-2xl font-semibold text-gray-100">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
             {product.title}
           </h1>
-          <p className="text-gray-200 text-sm">
+          <p className="text-gray-700 dark:text-gray-200">
             {product.description}
           </p>
           <p className="text-sm text-gray-400">50ml</p>
-          <p className="text-base font-bold text-gray-100">
+          <p className="text-base font-bold text-gray-900 dark:text-gray-100">
             ${product.price}
           </p>
           <button
-            className="mt-6 px-5 py-2 rounded-md bg-gray-100 text-gray-900 text-sm hover:bg-white transition"
+            className="mt-6 px-5 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             onClick={() =>
               addToCart({
                 id: product.id,

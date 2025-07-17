@@ -119,9 +119,9 @@ export default function NewProduct() {
   };
 
   return (
-    <main className="max-w-4xl mx-auto py-10 px-6 bg-gray-900 min-h-screen">
+    <main className="max-w-4xl mx-auto py-10 px-6 bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-100">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
           Add New Product
         </h1>
       </div>
@@ -135,6 +135,7 @@ export default function NewProduct() {
           placeholder="Enter product title"
           {...register("title")}
           error={errors.title?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -142,6 +143,7 @@ export default function NewProduct() {
           placeholder="Enter product description"
           {...register("description")}
           error={errors.description?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <SelectField
@@ -149,6 +151,7 @@ export default function NewProduct() {
           options={Object.values(Category)}
           {...register("category")}
           error={errors.category?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -157,6 +160,7 @@ export default function NewProduct() {
           placeholder="Enter product price"
           {...register("price")}
           error={errors.price?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -165,6 +169,7 @@ export default function NewProduct() {
           placeholder="Enter stock quantity"
           {...register("stock")}
           error={errors.stock?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -172,6 +177,7 @@ export default function NewProduct() {
           placeholder="Enter brand name"
           {...register("brand")}
           error={errors.brand?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -179,6 +185,7 @@ export default function NewProduct() {
           placeholder="Enter SKU"
           {...register("sku")}
           error={errors.sku?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -187,6 +194,7 @@ export default function NewProduct() {
           placeholder="Enter product weight"
           {...register("weight")}
           error={errors.weight?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -194,6 +202,7 @@ export default function NewProduct() {
           placeholder="Enter warranty information"
           {...register("warrantyInformation")}
           error={errors.warrantyInformation?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -201,6 +210,7 @@ export default function NewProduct() {
           placeholder="Enter shipping information"
           {...register("shippingInformation")}
           error={errors.shippingInformation?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <InputField
@@ -209,9 +219,10 @@ export default function NewProduct() {
           placeholder="Enter minimum order quantity"
           {...register("minimumOrderQuantity")}
           error={errors.minimumOrderQuantity?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
-        <h2 className="text-md font-semibold text-gray-100">
+        <h2 className="text-md font-semibold text-gray-900 dark:text-gray-100">
           Product Dimensions
         </h2>
         <DimensionFields register={register} errors={errors.dimensions} />
@@ -222,6 +233,7 @@ export default function NewProduct() {
           options={Object.values(Tag)}
           register={register}
           error={errors.tags?.[0]?.message}
+          labelClassName="text-gray-700 dark:text-gray-100"
         />
 
         <SelectField
@@ -229,6 +241,7 @@ export default function NewProduct() {
           options={Object.values(AvailabilityStatus)}
           {...register("availabilityStatus")}
           error={errors.availabilityStatus?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <SelectField
@@ -236,10 +249,11 @@ export default function NewProduct() {
           options={Object.values(ReturnPolicy)}
           {...register("returnPolicy")}
           error={errors.returnPolicy?.message}
+          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         />
 
         <div className="flex flex-col">
-          <label htmlFor="image" className="text-gray-100 text-sm font-bold mb-2">Product Image</label>
+          <label htmlFor="image" className="text-gray-700 dark:text-gray-100 text-sm font-bold mb-2">Product Image</label>
           <input
             type="file"
             id="image"
@@ -249,7 +263,7 @@ export default function NewProduct() {
               handleImageChange(e);
               register("image").onChange(e);
             }}
-            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded-md"
+            className="dark:bg-gray-700 dark:text-gray-100 p-2 rounded-md"
           />
           {errors.image && (
             <p className="text-red-500 text-xs italic">{errors.image.message as string}</p>
