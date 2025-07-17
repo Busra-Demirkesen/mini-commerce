@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewProductAction } from "@/app/actions/admin/products";
 import { productSchema } from "@/validations/productSchema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -58,8 +58,16 @@ export default function NewProduct() {
     const file = e.target.files?.[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview(null);
     }
   };
+
+  useEffect(() => {
+    if (errors.image) {
+      setImagePreview(null);
+    }
+  }, [errors.image]);
 
   const onSubmit = async (data: ProductForm) => {
     const formData = new FormData();
@@ -104,6 +112,7 @@ export default function NewProduct() {
 
     if (result.success) {
       alert("Product created successfully ✅");
+      setImagePreview(null);
     } else {
       console.error("Backend validation error", result.errors);
     }
@@ -213,7 +222,6 @@ export default function NewProduct() {
           options={Object.values(Tag)}
           register={register}
           error={errors.tags?.[0]?.message}
-
         />
 
         <SelectField
@@ -230,47 +238,42 @@ export default function NewProduct() {
           error={errors.returnPolicy?.message}
         />
 
-        {/* ✅ Image input */}
         <div className="flex flex-col">
-          <label htmlFor="image">Product Image</label>
+          <label htmlFor="image" className="text-gray-100 text-sm font-bold mb-2">Product Image</label>
           <input
             type="file"
-            accept=".jpeg, .jpg, .webp"
+            id="image"
+            accept=".jpeg, .jpg, .webp, .png"
             {...register("image")}
             onChange={(e) => {
               handleImageChange(e);
               register("image").onChange(e);
             }}
-            className="dark:bg-stone-200 dark:text-stone-900"
+            className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded-md"
           />
+          {errors.image && (
+            <p className="text-red-500 text-xs italic">{errors.image.message as string}</p>
+          )}
 
           {imagePreview && (
-            <div className="mt-4">
+            <div className="mt-4 w-48 h-48 relative">
               <Image
                 src={imagePreview}
                 alt="Product Preview"
-                width={200}
-                height={200}
-                className="object-cover rounded-md shadow-md"
+                layout="fill"
+                objectFit="contain"
+                className="rounded-md shadow-md"
               />
             </div>
           )}
-
-          {errors.image && (
-            <p className="text-red-500 text-sm">
-              {errors.image.message as string}
-            </p>
-          )}
         </div>
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-gray-100 text-gray-900 rounded-md hover:bg-white transition"
-          >
-            Add Product
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="mt-6 w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Add Product
+        </button>
       </form>
     </main>
   );

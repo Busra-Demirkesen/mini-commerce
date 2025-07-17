@@ -6,20 +6,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-type Product = {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  thumbnail: string;
-  category: string;
-};
+import { Product, Category } from "@/types/product";
 
 export default function ProductDetailPage() {
   const { addToCart } = useCart();
   const params = useParams();
-  const id = Number(params?.id);
+  const id = params?.id as string;
 
   const [product, setProduct] = useState<Product | null>(null);
 
@@ -41,7 +33,7 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         <div>
           <Image
-            src={product.thumbnail}
+            src={product.imageUrl}
             alt={product.title}
             width={500}
             height={500}
@@ -69,7 +61,7 @@ export default function ProductDetailPage() {
                 id: product.id,
                 title: product.title,
                 price: product.price,
-                image: product.thumbnail,
+                image: product.imageUrl,
                 quantity: 1,
               })
             }
