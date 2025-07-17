@@ -127,11 +127,11 @@ export async function addNewProductAction(
 
       imageUrl = blob.url;
       console.log("✅ Image uploaded to Vercel Blob:", imageUrl);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("🔥 Vercel Blob upload error:", error);
       return {
         success: false,
-        message: "Failed to upload product image.",
+        message: `Failed to upload product image: ${error instanceof Error ? error.message : 'Unknown error'}`,
         inputs: { ...rawData },
       };
     }
@@ -152,11 +152,11 @@ export async function addNewProductAction(
       success: true,
       message: 'The product is created successfully',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("🔥 Firestore Error:", error);
     return {
       success: false,
-      message: 'Failed to save product to database.',
+      message: `Failed to save product to database: ${error instanceof Error ? error.message : 'Unknown error'}`,
       inputs: rawData,
     };
   }
@@ -254,11 +254,11 @@ export async function updateProductAction(
 
       imageUrl = blob.url;
       console.log("✅ New image uploaded to Vercel Blob:", imageUrl);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("🔥 Vercel Blob upload error:", error);
       return {
         success: false,
-        message: "Failed to upload new product image.",
+        message: `Failed to upload new product image: ${error instanceof Error ? error.message : 'Unknown error'}`,
         inputs: { ...rawData },
       };
     }
@@ -280,11 +280,11 @@ export async function updateProductAction(
       success: true,
       message: 'The product is updated successfully',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("🔥 Firestore Error:", error);
     return {
       success: false,
-      message: 'Failed to update product in database.',
+      message: `Failed to update product in database: ${error instanceof Error ? error.message : 'Unknown error'}`,
       inputs: rawData,
     };
   }
@@ -332,11 +332,11 @@ export async function deleteProductAction(
         message: 'Product not found.',
       };
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("🔥 Deletion Error:", error);
     return {
       success: false,
-      message: 'Failed to delete product.',
+      message: `Failed to delete product: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }
