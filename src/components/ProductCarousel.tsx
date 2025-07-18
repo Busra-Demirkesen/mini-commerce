@@ -3,13 +3,7 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
-
-type Product = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-};
+import { Product } from "@/types/product";
 
 export default function ProductCarousel({ products }: { products: Product[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);

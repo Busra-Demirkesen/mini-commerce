@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import {
   Product,
@@ -86,7 +86,6 @@ export default function EditProductPage() {
           setValue("minimumOrderQuantity", data.minimumOrderQuantity ?? 1);
           setValue("tags", data.tags || []);
           setValue("dimensions", data.dimensions || { width: 0, height: 0, depth: 0 });
-          setValue("images", data.images ?? []);
           // Mevcut görseli önizlemek için ayarla
           if (data.imageUrl) {
             setImagePreview(data.imageUrl);
@@ -108,31 +107,50 @@ export default function EditProductPage() {
     const file = e.target.files?.[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview(null);
     }
   };
 
+  useEffect(() => {
+    if (errors.image) {
+      setImagePreview(null);
+    }
+  }, [errors.image]);
+
   const onSubmit = async (data: EditProductForm) => {
-    // FormData oluştur ve görseli ekle
     const formData = new FormData();
 
-    // Tüm alanları formData'ya ekle
-    for (const key in data) {
-      if (key === "tags") {
-        data.tags?.forEach((tag) => formData.append("tags", tag));
-      } else if (key === "dimensions") {
-        formData.append("dimensions.width", data.dimensions.width.toString());
-        formData.append("dimensions.height", data.dimensions.height.toString());
-        formData.append("dimensions.depth", data.dimensions.depth.toString());
-      } else if (key === "image" && data.image && data.image[0]) {
-        formData.append("image", data.image[0]);
-      } else if (key !== "image" && data[key] !== undefined && data[key] !== null) {
-        // `images` gibi diğer dosya dizilerini veya undefined/null değerleri atla
-        formData.append(key, data[key].toString());
-      }
-    }
-
-    // Ürün ID'sini FormData'ya ekle
     formData.append("id", id as string);
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("availabilityStatus", data.availabilityStatus);
+    formData.append("returnPolicy", data.returnPolicy);
+    formData.append("price", data.price.toString());
+    formData.append("stock", data.stock.toString());
+    formData.append("brand", data.brand);
+    formData.append("sku", data.sku);
+    formData.append("weight", data.weight.toString());
+    formData.append("warrantyInformation", data.warrantyInformation);
+    formData.append("shippingInformation", data.shippingInformation);
+    formData.append(
+      "minimumOrderQuantity",
+      data.minimumOrderQuantity.toString()
+    );
+
+    data.tags?.forEach((tag) => formData.append("tags", tag));
+
+    formData.append("dimensions.width", data.dimensions.width.toString());
+    formData.append("dimensions.height", data.dimensions.height.toString());
+    formData.append("dimensions.depth", data.dimensions.depth.toString());
+
+    if (data.image && data.image[0]) {
+      formData.append("image", data.image[0]);
+    } else if (imagePreview) {
+      // No new image selected, but there's an existing one
+      formData.append("imageUrl", imagePreview);
+    }
 
     const emptyState = {
       success: false,
@@ -142,11 +160,12 @@ export default function EditProductPage() {
     };
 
     try {
-      const result = await updateProductAction(emptyState, formData); // Yeni action çağrısı
+      const result = await updateProductAction(emptyState, formData);
 
       if (result.success) {
         alert("Product updated successfully ✅");
-        router.push("/admin/products");
+        setImagePreview(null);
+        router.push("/admin"); // Redirect to admin panel after successful update
       } else {
         console.error("Backend validation error for update:", result.errors);
         alert("Failed to update product: " + result.message);
@@ -172,8 +191,10 @@ export default function EditProductPage() {
         <InputField label="SKU" {...register("sku")} error={errors.sku?.message} />
         <InputField label="Weight" type="number" {...register("weight")} error={errors.weight?.message} />
         <InputField label="Warranty Information" {...register("warrantyInformation")} error={errors.warrantyInformation?.message} />
-        <InputField label="Shipping Information" {...register("shippingInformation")} error={errors.shippingInformation?.message} />
-        <InputField label="Minimum Order Quantity" type="number" {...register("minimumOrderQuantity")} error={errors.minimumOrderQuantity?.message} />
+        <InputField label="Shipping Information" {...register("shippingInformation")}
+          error={errors.shippingInformation?.message} />
+        <InputField label="Minimum Order Quantity" type="number" {...register("minimumOrderQuantity")}
+          error={errors.minimumOrderQuantity?.message} />
 
         {/* Yeni Eklenen Görsel Input Alanı */}
         <div className="flex flex-col">
@@ -189,13 +210,13 @@ export default function EditProductPage() {
             className="dark:bg-stone-200 dark:text-stone-900 p-2 rounded"
           />
           {imagePreview && (
-            <div className="mt-4">
+            <div className="mt-4 w-48 h-48 relative">
               <Image
                 src={imagePreview}
                 alt="Product Preview"
-                width={200}
-                height={200}
-                className="object-cover rounded-md shadow-md"
+                layout="fill"
+                objectFit="contain"
+                className="rounded-md shadow-md"
               />
             </div>
           )}
@@ -217,7 +238,7 @@ export default function EditProductPage() {
         <SelectField label="Availability Status" options={Object.values(AvailabilityStatus)} {...register("availabilityStatus")} error={errors.availabilityStatus?.message} />
         <SelectField label="Return Policy" options={Object.values(ReturnPolicy)} {...register("returnPolicy")} error={errors.returnPolicy?.message} />
 
-        <DimensionFields register={register} errors={errors} />
+        <DimensionFields register={register} errors={errors.dimensions} />
 
         <div className="flex justify-end">
           <button type="submit" className="px-6 py-2 bg-gray-100 text-gray-900 rounded-md hover:bg-white transition">

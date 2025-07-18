@@ -2,7 +2,7 @@
 
 import { NewProductFormState } from '@/app/admin/products/new/page';
 import { db } from "@/lib/firebase";
-import { collection, addDoc, Timestamp, doc, updateDoc, getDoc } from "firebase/firestore"; // getDoc ve updateDoc eklendi
+import { collection, addDoc, Timestamp, doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore"; // getDoc ve updateDoc eklendi
 import { put, del } from "@vercel/blob"; // del eklendi
 import { productSchema } from "@/validations/productSchema";
 
@@ -127,11 +127,11 @@ export async function addNewProductAction(
 
       imageUrl = blob.url;
       console.log("✅ Image uploaded to Vercel Blob:", imageUrl);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("🔥 Vercel Blob upload error:", error);
       return {
         success: false,
-        message: "Failed to upload product image.",
+        message: `Failed to upload product image: ${error instanceof Error ? error.message : 'Unknown error'}`,
         inputs: { ...rawData },
       };
     }
@@ -152,11 +152,11 @@ export async function addNewProductAction(
       success: true,
       message: 'The product is created successfully',
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("🔥 Firestore Error:", error);
     return {
       success: false,
-      message: 'Failed to save product to database.',
+      message: `Failed to save product to database: ${error instanceof Error ? error.message : 'Unknown error'}`,
       inputs: rawData,
     };
   }
@@ -199,14 +199,7 @@ export async function updateProductAction(
   // Mevcut ürünü Firestore'dan alarak eski görsel URL'sini kontrol et
   const productRef = doc(db, "products", productId);
   const productSnap = await getDoc(productRef);
-  let currentImageUrl = "";
-
-  if (productSnap.exists()) {
-    currentImageUrl = productSnap.data().imageUrl || "";
-  }
-
-  console.log("🖼️ Image file for update from FormData:", imageFile);
-  console.log("Current image URL:", currentImageUrl);
+  const existingProduct = productSnap.data();
 
   if (imageFile && imageFile.size > 0) {
     const isAllowedType = allowedImageTypes.some((type) =>
@@ -226,7 +219,7 @@ export async function updateProductAction(
 
     if (imageFile.size > MAX_ALLOWED_IMAGE_SIZE) {
       console.warn(
-        "❌ Image size exceeds limit for update:",
+        "❌ Image size exceeds limit:",
         imageFile.size,
         "bytes (max",
         MAX_ALLOWED_IMAGE_SIZE,
@@ -243,7 +236,14 @@ export async function updateProductAction(
     }
 
     try {
-      console.log("⬆️ Attempting to upload new image to Vercel Blob for update...");
+      // Eski görseli sil
+      if (existingProduct?.imageUrl) {
+        console.log("🗑️ Deleting old image from Vercel Blob:", existingProduct.imageUrl);
+        await del(existingProduct.imageUrl);
+      }
+
+      // Yeni görseli yükle
+      console.log("⬆️ Attempting to upload new image to Vercel Blob...");
       const extension = imageFile.type.split("/")[1];
       const imageName = `products/${Date.now()}.${extension}`;
 
@@ -254,73 +254,89 @@ export async function updateProductAction(
 
       imageUrl = blob.url;
       console.log("✅ New image uploaded to Vercel Blob:", imageUrl);
-
-      // Eski görseli sil (eğer varsa)
-      if (currentImageUrl) {
-        try {
-          const oldUrl = new URL(currentImageUrl);
-          const oldPathname = oldUrl.pathname;
-          await del(oldPathname);
-          console.log("🗑️ Old image deleted from Vercel Blob:", currentImageUrl);
-        } catch (delError) {
-          console.warn("⚠️ Failed to delete old image from Vercel Blob:", delError);
-          // Hata olsa bile güncelleme işlemine devam et
-        }
-      }
-    } catch (error) {
-      console.error("🔥 Vercel Blob upload error for update:", error);
+    } catch (error: unknown) {
+      console.error("🔥 Vercel Blob upload error:", error);
       return {
         success: false,
-        message: "Failed to upload product image.",
+        message: `Failed to upload new product image: ${error instanceof Error ? error.message : 'Unknown error'}`,
         inputs: { ...rawData },
       };
     }
-  } else if (validated.imageUrl === null || validated.imageUrl === undefined) {
-    // Eğer görsel alanı boş gönderildiyse ve mevcut bir görsel varsa, sil
-    if (currentImageUrl) {
-        try {
-            const oldUrl = new URL(currentImageUrl);
-            const oldPathname = oldUrl.pathname;
-            await del(oldPathname);
-            console.log("🗑️ Existing image removed (user cleared it) from Vercel Blob:", currentImageUrl);
-            imageUrl = ""; // URL'yi boşalt
-        } catch (delError) {
-            console.warn("⚠️ Failed to delete existing image (user cleared it) from Vercel Blob:", delError);
-            imageUrl = currentImageUrl; // Hata durumunda URL'yi koru
-        }
-    }
-  } else if (imageFile === null && currentImageUrl) {
-    // Görsel değişmediyse ve mevcut bir görsel varsa, mevcut URL'yi koru
-    imageUrl = currentImageUrl;
-  } else {
-    imageUrl = ""; // Görsel yoksa veya silindiyse boş bırak
+  } else if (existingProduct?.imageUrl) {
+    // Yeni görsel yoksa ve eski görsel varsa, eski görsel URL'sini koru
+    imageUrl = existingProduct.imageUrl;
   }
 
-  // ✅ Firestore kaydını güncelle
   try {
     console.log("💾 Attempting to update product in Firestore...");
-    const updateData: Record<string, any> = {
+    await updateDoc(productRef, {
       ...validated,
-      imageUrl: imageUrl, // Güncel görsel URL'si
+      imageUrl,
       updatedAt: Timestamp.now(),
-    };
-
-    // `image` field'ı formData'dan geliyorsa, Firestore'a kaydetme
-    delete updateData.image; // productSchema'dan gelen 'image' alanını kaldır
-
-    await updateDoc(productRef, updateData);
+    });
     console.log("✅ Product updated in Firestore:", validated);
 
     return {
       success: true,
       message: 'The product is updated successfully',
     };
-  } catch (error) {
-    console.error("🔥 Firestore Update Error:", error);
+  } catch (error: unknown) {
+    console.error("🔥 Firestore Error:", error);
     return {
       success: false,
-      message: 'Failed to update product to database.',
+      message: `Failed to update product in database: ${error instanceof Error ? error.message : 'Unknown error'}`,
       inputs: rawData,
+    };
+  }
+}
+
+export async function deleteProductAction(
+  productId: string
+): Promise<NewProductFormState> {
+  console.log('🛠️ Receiving product deletion request...');
+
+  if (!productId) {
+    console.warn('❌ Product ID is missing for deletion.');
+    return {
+      success: false,
+      message: 'Product ID is required for deletion.',
+    };
+  }
+
+  try {
+    // Firestore'dan ürünü alarak görsel URL'sini bul
+    const productRef = doc(db, "products", productId);
+    const productSnap = await getDoc(productRef);
+
+    if (productSnap.exists()) {
+      const productData = productSnap.data();
+
+      // Vercel Blob'dan görseli sil
+      if (productData.imageUrl) {
+        console.log("🗑️ Deleting image from Vercel Blob:", productData.imageUrl);
+        await del(productData.imageUrl);
+      }
+
+      // Firestore'dan ürünü sil
+      await deleteDoc(productRef);
+      console.log("✅ Product deleted from Firestore:", productId);
+
+      return {
+        success: true,
+        message: 'Product deleted successfully',
+      };
+    } else {
+      console.warn('❌ Product not found for deletion:', productId);
+      return {
+        success: false,
+        message: 'Product not found.',
+      };
+    }
+  } catch (error: unknown) {
+    console.error("🔥 Deletion Error:", error);
+    return {
+      success: false,
+      message: `Failed to delete product: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }

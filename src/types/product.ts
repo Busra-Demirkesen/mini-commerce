@@ -14,7 +14,7 @@ export interface Dimensions {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   description: string;
   category: Category;
@@ -34,9 +34,9 @@ export interface Product {
   returnPolicy: ReturnPolicy;
   minimumOrderQuantity: number;
   meta: Meta;
-  images: string[];
-  thumbnail: string;
-  imageUrl?: string; // ✅ Eklendi: Firestore'a kaydedilen görsel URL'si
+  imageUrl: string; // ✅ Eklendi: Firestore'a kaydedilen görsel URL'si
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export enum Tag {
@@ -48,9 +48,9 @@ export enum Tag {
 }
 
 export enum Category {
-  FRAGRANCES = 'fragrances',
-  BEAUTY = 'beauty',
-  GROCERIES = 'groceries',
+  SMARTPHONES = 'smartphones',
+  LAPTOPS = 'laptops',
+  TECHNOLOGICAL_ACCESSORIES = 'technological accessories',
 }
 
 export const allCategories = Object.values(Category);
